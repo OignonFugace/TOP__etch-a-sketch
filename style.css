@@ -28,10 +28,8 @@ main {
 .container {
     display: grid;
     margin: 2rem 0;
-    /* gap: 2px; */
     min-width: 800px;
     min-height: 800px;
-    background-color: #212121;
     border: 2px solid #212121;
 }
 

@@ -35,6 +35,7 @@ function makeApp() {
         Array.from(container.children).forEach(element => element.remove());
         for (let i = 0; i < numberOfDiv ** 2; i++) {
             const div = document.createElement('div');
+            div.style.backgroundColor = 'rgb(255, 255, 255)';
             div.addEventListener('mousedown', (e) => {
                 isDrawing = true;
                 draw(e);
@@ -75,31 +76,40 @@ function makeApp() {
                 e.target.style.backgroundColor = christmasPalette[index];
                 break;
             case 'darken':
-                let currentColorString = e.target.style.backgroundColor;
-                let colorValues;
-                let opacity;
-                if (currentColorString.match(rgbregex)) {
-                    opacity = '1';
-                    colorValues = currentColorString.match(rgbregex)[1] + ',';
-                } else if (currentColorString.match(rgbaregex)) {
-                    opacity = currentColorString.match(rgbaregex)[27];
-                    colorValues = currentColorString.match(rgbaregex)[1];
-                } else {
-                    opacity = '1';
-                    colorValues = '255, 255, 255,';
-                }
-                let newOpacity = +opacity - 0.1;
-                e.target.style.backgroundColor = `rgba(${colorValues} ${newOpacity})`;
+                e.target.style.backgroundColor = shadeColor(e.target.style.backgroundColor, 'darken',  10);
                 break;
             case 'lighten':
-                let style = window.getComputedStyle(e.target, '::after');
-                let colorString = style.getPropertyValue('background-color'); 
-                let opacityValue = colorString.match(rgbaregex)[27];
-                let newOpacityValue = +opacityValue + 0.1
-                style.setProperty('background-color', `rgba(255, 255, 255, ${newOpacityValue})`);
-                console.log(style);
+                e.target.style.backgroundColor = shadeColor(e.target.style.backgroundColor, 'lighten', 10);
                 break;
         }
+    }
+
+    function shadeColor(color, mode, percent) {
+        let colorValues = color.match(rgbregex)[1].split(', ');
+
+        let R = +colorValues[0];
+        let G = +colorValues[1];
+        let B = +colorValues[2];
+
+        if (mode === 'lighten') {
+            R += (255 - R) * percent / 100;
+            G += (255 - G) * percent / 100;
+            B += (255 - B) * percent / 100;
+
+            R = Math.round(R);
+            G = Math.round(G);
+            B = Math.round(B);
+        } else if (mode === 'darken') {
+            R -= R * percent / 100;
+            G -= G * percent / 100;
+            B -= B * percent / 100;
+
+            R = Math.round(R);
+            G = Math.round(G);
+            B = Math.round(B);
+        }
+
+        return `rgb(${R} ,${G}, ${B})`
     }
 
     function changeGridSize(e) {
@@ -135,3 +145,5 @@ function makeApp() {
 
 let app = makeApp();
 app();
+
+
