@@ -16,13 +16,19 @@ function makeApp() {
     const clearBtn = document.getElementById('clearBtn');
     const lightenBtn = document.getElementById('lightenBtn');
     const darkenBtn = document.getElementById('darkenBtn');
+    const forestTheme = document.getElementById('forestTheme');
+    const warmTheme = document.getElementById('warmTheme');
+    const christmasTheme = document.getElementById('christmasTheme');
+    
 
     let isDrawing = false;
     let drawingOption = 'color';
-    let currentColor = '#000';
+    let currentColor = '#212121';
     let numberOfDiv = 31;
 
-    const colorPalette = ['#582f0e', '#7f4f24', '#936639', '#a68a64', '#b6ad90', '#c2c5aa', '#a4ac86', '#656d4a', '#414833', '#333d29'];
+    const forestPalette = ['#582f0e', '#7f4f24', '#936639', '#a68a64', '#b6ad90', '#c2c5aa', '#a4ac86', '#656d4a', '#414833', '#333d29'];
+    const warmPalette = ['#f4e409', '#eeba0b', '#c36f09', '#a63c06', '#710000'];
+    const christmasPalette = ['#da2c38', '#226f54', '#87c38f', '#f4f0bb', '#43291f'];
 
     function makeGrid(numberOfDiv) {
         container.style.setProperty('grid-template-columns', `repeat(${numberOfDiv}, 1fr)`);
@@ -42,6 +48,7 @@ function makeApp() {
     }
 
     function draw(e) {
+        let index;
         switch (drawingOption) {
             case 'color':
                 e.target.style.backgroundColor = currentColor;
@@ -50,8 +57,22 @@ function makeApp() {
                 e.target.style.backgroundColor = '';
                 break;
             case 'multicolor':
-                let index = Math.floor(Math.random() * colorPalette.length)
-                e.target.style.backgroundColor = colorPalette[index];
+                let red = Math.floor(Math.random() * 256);
+                let green = Math.floor(Math.random() * 256);
+                let blue = Math.floor(Math.random() * 256);
+                e.target.style.backgroundColor = `rgb(${red}, ${green}, ${blue})`;
+                break;
+            case 'forestTheme':
+                index = Math.floor(Math.random() * forestPalette.length)
+                e.target.style.backgroundColor = forestPalette[index];
+                break;
+            case 'warmTheme':
+                index = Math.floor(Math.random() * warmPalette.length)
+                e.target.style.backgroundColor = warmPalette[index];
+                break;
+            case 'christmasTheme':
+                index = Math.floor(Math.random() * christmasPalette.length)
+                e.target.style.backgroundColor = christmasPalette[index];
                 break;
             case 'darken':
                 let currentColorString = e.target.style.backgroundColor;
@@ -94,11 +115,17 @@ function makeApp() {
         gridSizeBtn.addEventListener('click', changeGridSize);
         eraserBtn.addEventListener('click', () => drawingOption = 'erase');
         drawBtn.addEventListener('click', () => drawingOption = 'color');
-        colorPicker.addEventListener('change', e => currentColor = e.target.value);
+        colorPicker.addEventListener('change', e => {
+            drawingOption = 'color';
+            currentColor = e.target.value;
+        });
         multicolorBtn.addEventListener('click', () => drawingOption = 'multicolor');
         clearBtn.addEventListener('click', () => makeGrid(numberOfDiv));
         lightenBtn.addEventListener('click', () => drawingOption = 'lighten');
         darkenBtn.addEventListener('click', () => drawingOption = 'darken');
+        forestTheme.addEventListener('click', () => drawingOption = 'forestTheme');
+        warmTheme.addEventListener('click', () => drawingOption = 'warmTheme');
+        christmasTheme.addEventListener('click', () => drawingOption = 'christmasTheme');
 
         makeGrid(numberOfDiv);
     }
