@@ -2,13 +2,13 @@
 
 function makeApp() {
 
-    /* VARIABLES DECLARATION */
-
     const rgbregex = /^rgb\((((((((1?[1-9]?\d)|10\d|(2[0-4]\d)|25[0-5]),\s?)){2}|((((1?[1-9]?\d)|10\d|(2[0-4]\d)|25[0-5])\s)){2})((1?[1-9]?\d)|10\d|(2[0-4]\d)|25[0-5]))|((((([1-9]?\d(\.\d+)?)|100|(\.\d+))%,\s?){2}|((([1-9]?\d(\.\d+)?)|100|(\.\d+))%\s){2})(([1-9]?\d(\.\d+)?)|100|(\.\d+))%))\)$/i;
-    const rgbaregex = /^rgba\((((((((1?[1-9]?\d)|10\d|(2[0-4]\d)|25[0-5]),\s?)){3})|(((([1-9]?\d(\.\d+)?)|100|(\.\d+))%,\s?){3}))|(((((1?[1-9]?\d)|10\d|(2[0-4]\d)|25[0-5])\s){3})|(((([1-9]?\d(\.\d+)?)|100|(\.\d+))%\s){3}))\/\s)((0?\.\d+)|[01]|(([1-9]?\d(\.\d+)?)|100|(\.\d+))%)\)$/i;
+    const forestPalette = ['#582f0e', '#7f4f24', '#936639', '#a68a64', '#b6ad90', '#c2c5aa', '#a4ac86', '#656d4a', '#414833', '#333d29'];
+    const warmPalette = ['#f4e409', '#eeba0b', '#c36f09', '#a63c06', '#710000'];
+    const christmasPalette = ['#da2c38', '#226f54', '#87c38f', '#f4f0bb', '#43291f'];
 
     const container = document.getElementById('container');
-    const gridSizeBtn = document.getElementById('gridSizeBtn');
+    const gridSizeRange = document.getElementById('gridSizeRange');
     const eraserBtn = document.getElementById('eraserBtn');
     const drawBtn = document.getElementById('drawBtn');
     const colorPicker = document.getElementById('colorPicker');
@@ -19,16 +19,11 @@ function makeApp() {
     const forestTheme = document.getElementById('forestTheme');
     const warmTheme = document.getElementById('warmTheme');
     const christmasTheme = document.getElementById('christmasTheme');
-    
 
     let isDrawing = false;
     let drawingOption = 'color';
     let currentColor = '#212121';
     let numberOfDiv = 31;
-
-    const forestPalette = ['#582f0e', '#7f4f24', '#936639', '#a68a64', '#b6ad90', '#c2c5aa', '#a4ac86', '#656d4a', '#414833', '#333d29'];
-    const warmPalette = ['#f4e409', '#eeba0b', '#c36f09', '#a63c06', '#710000'];
-    const christmasPalette = ['#da2c38', '#226f54', '#87c38f', '#f4f0bb', '#43291f'];
 
     function makeGrid(numberOfDiv) {
         container.style.setProperty('grid-template-columns', `repeat(${numberOfDiv}, 1fr)`);
@@ -86,11 +81,9 @@ function makeApp() {
 
     function shadeColor(color, mode, percent) {
         let colorValues = color.match(rgbregex)[1].split(', ');
-
         let R = +colorValues[0];
         let G = +colorValues[1];
         let B = +colorValues[2];
-
         if (mode === 'lighten') {
             R += (255 - R) * percent / 100;
             G += (255 - G) * percent / 100;
@@ -99,6 +92,10 @@ function makeApp() {
             R = Math.round(R);
             G = Math.round(G);
             B = Math.round(B);
+
+            R = (R < 255) ? R : 255;
+            G = (G < 255) ? G : 255;
+            B = (B < 255) ? B : 255;
         } else if (mode === 'darken') {
             R -= R * percent / 100;
             G -= G * percent / 100;
@@ -107,22 +104,18 @@ function makeApp() {
             R = Math.round(R);
             G = Math.round(G);
             B = Math.round(B);
-        }
 
+            R = (R > 0) ? R : 0;
+            G = (G > 0) ? G : 0;
+            B = (B > 0) ? B : 0;
+        }
         return `rgb(${R} ,${G}, ${B})`
     }
-
-    function changeGridSize(e) {
-        numberOfDiv = prompt('Side size of the grid ? ');
-        if (!numberOfDiv) numberOfDiv = 31;
-        makeGrid(numberOfDiv);
-    }
-
 
     function app() {
         window.addEventListener('mouseup', () => isDrawing = false);
         window.addEventListener('mouseleave', () => isDrawing = false);
-        gridSizeBtn.addEventListener('click', changeGridSize);
+        gridSizeRange.addEventListener('input', e => makeGrid(e.target.value));
         eraserBtn.addEventListener('click', () => drawingOption = 'erase');
         drawBtn.addEventListener('click', () => drawingOption = 'color');
         colorPicker.addEventListener('change', e => {
