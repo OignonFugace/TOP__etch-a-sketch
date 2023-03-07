@@ -1,13 +1,12 @@
 
-
-*, 
+*,
 *::before,
 *::after {
     box-sizing: border-box;
     -webkit-user-select: none;
-	-webkit-user-drag: none;
-	-webkit-app-region: no-drag;
-	cursor: default;
+    -webkit-user-drag: none;
+    -webkit-app-region: no-drag;
+    cursor: default;
 }
 
 body {
@@ -61,3 +60,5 @@ button, input {
     width: 100%;
     accent-color: #212121;
 }
+
+
